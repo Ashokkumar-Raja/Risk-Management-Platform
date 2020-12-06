@@ -1,0 +1,27 @@
+image: ryandca/risk-mgmt-ci-image
+
+before_script:
+  - npm install
+  - npm install -g @angular/cli
+  - ng build --prod
+
+deploy-dev:
+  only:
+    - dev
+    - ryancampbell/testing-pipeline
+  tags:
+    - dalfcs_gitlab_docker_ci
+  stage: deploy
+  script:
+    - firebase use risk-management-platform-dev --token $FIREBASE_DEPLOY_KEY
+    - firebase deploy --only hosting --token $FIREBASE_DEPLOY_KEY
+
+deploy-master:
+  only:
+    - master
+  tags:
+    - dalfcs_gitlab_docker_ci
+  stage: deploy
+  script:
+    - firebase use risk-management-platform --token $FIREBASE_DEPLOY_KEY
+    - firebase deploy --only hosting --token $FIREBASE_DEPLOY_KEY
